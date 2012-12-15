@@ -1,6 +1,8 @@
 @groovy.transform.Immutable class TestCase {
 
     String location
+    String paramsScriptPath
+    String actionScriptPath
 
     Collection<TestStep> readSteps() {
         File locationDir = new File(location)
@@ -10,7 +12,7 @@
             it.isFile() && it.getName().endsWith(".xml")
         }
 
-        files.collect{ new TestStep(location: it.getCanonicalPath())}
+        files.collect{ new TestStep(testCase: this, templateFilePath: it.getCanonicalPath())}
     }
 
 }

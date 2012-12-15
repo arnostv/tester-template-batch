@@ -1,4 +1,5 @@
 
 @groovy.transform.Immutable class TestStep {
-    String location
+    TestCase testCase
+    String templateFilePath
 }

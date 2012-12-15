@@ -2,7 +2,9 @@ import groovy.text.XmlTemplateEngine
 
 class TestRunner {
 
-    def xmlTemplateEngine = new XmlTemplateEngine()
+    def testRunnerHandler = new TestRunnerHandler()
+
+    def xmlTemplateEngine = new XmlTemplateEngine() //GStringTemplateEngine
 
     def runTestSuite(Collection<TestCase> testCases) {
         testCases.each{runTestCase(it)}
@@ -28,15 +30,15 @@ class TestRunner {
         def params = new HashMap(testStepParams) // template engine seems to fail with immutable map
 
 
-        def template = xmlTemplateEngine.createTemplate(new File(testStep.location)).make(params)
-        println template.toString()
+        def template = xmlTemplateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
+        def evaluatedTemplate =  template.toString()
+        testRunnerHandler.handle(new TestStepData(testStep, evaluatedTemplate))
     }
 
     def evalTestCaseParams(TestCase testCase) {
-        def defaultMappingsFile = new File(testCase.location, "params.groovy")
-        if (defaultMappingsFile.isFile()) {
-            println "Evaluating parameters from ${defaultMappingsFile}"
-            Map mappings = new GroovyShell().evaluate(defaultMappingsFile)
+        if (testCase.paramsScriptPath) {
+            println "Evaluating parameters from ${testCase.paramsScriptPath}"
+            Map mappings = new GroovyShell().evaluate(new File(testCase.paramsScriptPath))
             mappings.asImmutable()
         } else {
             Map mappingsUndefined = [_parametersForTestCaseNotSet : true]
@@ -45,7 +47,7 @@ class TestRunner {
     }
 
     def evalTestStepParams(TestStep testStep, Map alreadyDefinedParams) {
-        def testStepParams = new File(testStep.location.replaceAll("\\.xml",".groovy"))
+        def testStepParams = new File(testStep.templateFilePath.replaceAll("\\.xml",".params.groovy"))
         Map paramsForStep
         if (testStepParams.isFile()) {
             println "Evaluating parameters from ${testStepParams}"
