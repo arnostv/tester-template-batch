@@ -1,0 +1,5 @@
+<hello stepname="second">
+    <name>${name}</name>
+    <surname>${surname}</surname>
+    <foo>${fooValue}</foo>
+</hello>

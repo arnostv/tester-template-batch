@@ -1,0 +1,4 @@
+<hello stepname="first">
+    <foo>${fooValue}</foo>
+    <bar name="${bar}"/>
+</hello>
