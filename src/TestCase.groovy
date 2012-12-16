@@ -12,7 +12,7 @@
             it.isFile() && it.getName().endsWith(".xml")
         }
 
-        files.collect{ new TestStep(testCase: this, templateFilePath: it.getCanonicalPath())}
+        files.collect{ new TestStep(templateFilePath: it.getCanonicalPath())}
     }
 
 }
