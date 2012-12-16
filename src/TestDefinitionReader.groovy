@@ -21,6 +21,7 @@ class TestDefinitionReader {
         }
         new TestSuite(
                 testCases:  testCases,
+                locationPath: testSuiteDir.getCanonicalPath(),
                 actionScriptPath: actionScriptPathIfExists(testSuiteDir.getCanonicalPath())
             )
     }

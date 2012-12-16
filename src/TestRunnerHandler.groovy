@@ -12,7 +12,9 @@ class TestRunnerHandler {
             bindings['payload'] = testStepData.evaluatedTemplate
 
             def actionFile = new File(actionScriptPath)
-            new GroovyShell(new Binding(bindings)).evaluate(actionFile)
+            def classLoader = new GroovyClassLoader()
+            classLoader.addClasspath(testStepData.testSTS.suite.locationPath)
+            new GroovyShell(classLoader, new Binding(bindings)).evaluate(actionFile)
         } else {
             println "UNKNOWN ACTION for ${testStepData}"
         }
