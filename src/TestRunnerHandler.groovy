@@ -23,7 +23,10 @@ class TestRunnerHandler {
 
     String findActionScriptPath (TestSTS testSTS) {
         String actionScriptPath = null
-        if (testSTS?.testCase?.actionScriptPath) {
+        if (testSTS?.step?.actionScriptPath) {
+            actionScriptPath = testSTS?.step?.actionScriptPath
+            println "Using test Step script ${actionScriptPath}"
+        } else if (testSTS?.testCase?.actionScriptPath) {
             actionScriptPath = testSTS?.testCase?.actionScriptPath
             println "Using test Case script ${actionScriptPath}"
         } else if (testSTS?.suite?.actionScriptPath) {

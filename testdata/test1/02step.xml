@@ -1,4 +1,4 @@
-<hello stepname="second">
+<hello stepname="SECOND">
     <name>${name}</name>
     <surname>${surname}</surname>
     <foo>${fooValue}</foo>
