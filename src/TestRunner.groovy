@@ -6,11 +6,15 @@ class TestRunner {
 
     def xmlTemplateEngine = new XmlTemplateEngine() //GStringTemplateEngine
 
-    def runTestSuite(Collection<TestCase> testCases) {
-        testCases.each{runTestCase(it)}
+    def runTestSuite(TestSuite testSuite) {
+        TestSTS sts = TestSTS.createWithTestSuite(testSuite)
+        testSuite.testCases.each {
+            runTestCase(sts.withTestCase(it))
+        }
     }
 
-    def runTestCase(TestCase testCase) {
+    def runTestCase(TestSTS testSTS) {
+        def testCase = testSTS.testCase
 
         println "Running ${testCase}"
 
@@ -18,11 +22,12 @@ class TestRunner {
 
         def steps = testCase.readSteps()
 
-        steps.each{runTestStep(defaultMappings, it)}
+        steps.each{runTestStep(defaultMappings, testSTS.withTestStep(it))}
 
     }
 
-    def runTestStep(def testCaseParams, TestStep testStep) {
+    def runTestStep(def testCaseParams, TestSTS testSTS) {
+        def testStep = testSTS.step
         println "Running step ${testStep}"
 
         def testStepParams = evalTestStepParams(testStep, testCaseParams)
@@ -32,7 +37,7 @@ class TestRunner {
 
         def template = xmlTemplateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
         def evaluatedTemplate =  template.toString()
-        testRunnerHandler.handle(new TestStepData(testStep, evaluatedTemplate))
+        testRunnerHandler.handle(new TestStepData(testSTS, evaluatedTemplate))
     }
 
     def evalTestCaseParams(TestCase testCase) {

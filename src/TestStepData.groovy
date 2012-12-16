@@ -1,10 +1,10 @@
 
 class TestStepData {
-    TestStep testStep
+    TestSTS testSTS
     def evaluatedTemplate
 
-    TestStepData(TestStep testStep, String evaluatedTemplate) {
-        this.testStep = testStep
+    TestStepData(TestSTS testSTS, String evaluatedTemplate) {
+        this.testSTS = testSTS
         this.evaluatedTemplate = evaluatedTemplate
 
     }

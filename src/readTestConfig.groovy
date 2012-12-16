@@ -4,7 +4,7 @@ println "Reading test config in " + testDataDir
 
 def reader = new TestDefinitionReader(testDataDir)
 
-Collection<TestCase> suite = reader.readTestSuite()
+TestSuite suite = reader.readTestSuite()
 
 
 TestRunner runner = new TestRunner()

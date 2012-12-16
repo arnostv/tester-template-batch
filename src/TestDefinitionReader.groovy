@@ -12,30 +12,43 @@ class TestDefinitionReader {
       assert testSuiteDir.isDirectory()
     }
 
-    Collection<TestCase> readTestSuite() {
+    TestSuite readTestSuite() {
         def filesInTestSuite = testSuiteDir.listFiles().toList()
         def directories =  filesInTestSuite.findAll {it.isDirectory()}
 
         def testCases = directories.collect{
             readTestCase(it.getCanonicalPath())
         }
-        testCases
+        new TestSuite(
+                testCases:  testCases,
+                actionScriptPath: actionScriptPathIfExists(testSuiteDir.getCanonicalPath())
+            )
     }
 
     def readTestCase(String testCasePath) {
 
-        def actionScriptFile = new File(testCasePath, ACTION_SCRIPT)
+        new TestCase(
+                location: testCasePath,
+                paramsScriptPath: paramsScriptPathIfExists(testCasePath),
+                actionScriptPath: actionScriptPathIfExists(testCasePath)
+             )
+    }
+
+    def actionScriptPathIfExists(def directory) {
+        def actionScriptFile = new File(directory, ACTION_SCRIPT)
         def actionScriptPath = null
         if (actionScriptFile.isFile()) {
             actionScriptPath = actionScriptFile.getCanonicalPath()
         }
+        actionScriptPath
+    }
 
-        def paramsScriptFile = new File(testCasePath, PARAMS_SCRIPT)
+    def paramsScriptPathIfExists(def directory) {
+        def paramsScriptFile = new File(directory, PARAMS_SCRIPT)
         def paramsScriptPath = null
         if (paramsScriptFile.isFile()) {
             paramsScriptPath = paramsScriptFile.getCanonicalPath()
         }
-
-        new TestCase(location: testCasePath, paramsScriptPath: paramsScriptPath, actionScriptPath: actionScriptPath)
+        paramsScriptPath
     }
 }
