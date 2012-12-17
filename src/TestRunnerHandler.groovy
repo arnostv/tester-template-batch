@@ -8,7 +8,7 @@ class TestRunnerHandler {
         def actionScriptPath = findActionScriptPath(testStepData.testSTS)
 
         if (actionScriptPath) {
-            def bindings = new HashMap()
+            def bindings = new HashMap(testStepData.testSTS.params)
             bindings['payload'] = testStepData.evaluatedTemplate
 
             def actionFile = new File(actionScriptPath)

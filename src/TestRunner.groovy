@@ -37,7 +37,7 @@ class TestRunner {
 
         def template = xmlTemplateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
         def evaluatedTemplate =  template.toString()
-        testRunnerHandler.handle(new TestStepData(testSTS, evaluatedTemplate))
+        testRunnerHandler.handle(new TestStepData(testSTS.withParams(params), evaluatedTemplate))
     }
 
     def evalTestCaseParams(TestCase testCase) {
