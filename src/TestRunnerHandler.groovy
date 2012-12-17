@@ -11,6 +11,8 @@ class TestRunnerHandler {
             def bindings = new HashMap(testStepData.testSTS.params)
             bindings['payload'] = testStepData.evaluatedTemplate
 
+            bindings['out'] = System.out
+
             def actionFile = new File(actionScriptPath)
             def classLoader = new GroovyClassLoader()
             classLoader.addClasspath(testStepData.testSTS.suite.locationPath)
