@@ -1,10 +1,10 @@
-import groovy.text.XmlTemplateEngine
+import groovy.text.GStringTemplateEngine
 
 class TestRunner {
 
     def testRunnerHandler = new TestRunnerHandler()
 
-    def xmlTemplateEngine = new XmlTemplateEngine() //GStringTemplateEngine
+    def templateEngine = new GStringTemplateEngine()//XmlTemplateEngine()
 
     def runTestSuite(TestSuite testSuite) {
         TestSTS sts = TestSTS.createWithTestSuite(testSuite)
@@ -35,7 +35,7 @@ class TestRunner {
         def params = new HashMap(testStepParams) // template engine seems to fail with immutable map
 
 
-        def template = xmlTemplateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
+        def template = templateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
         def evaluatedTemplate =  template.toString()
         testRunnerHandler.handle(new TestStepData(testSTS.withParams(params), evaluatedTemplate))
     }
