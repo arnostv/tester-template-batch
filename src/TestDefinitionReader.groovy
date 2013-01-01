@@ -42,21 +42,19 @@ class TestDefinitionReader {
         File locationDir = new File(location)
         assert locationDir.isDirectory()
 
-        def allFiles = locationDir.listFiles()
-        def files = allFiles.findAll {
-            it.isFile() && it.getName().endsWith(".xml")
+        def groupFinder = new FileGroupFinder(locationDir,[ACTION_SCRIPT, PARAMS_SCRIPT])
+        def groups = groupFinder.findGroups()
+        println "Groups : ${groups}"
+
+        def steps = groups.collect{ group ->
+            def xml = group.filesInGroup.find {it.name.endsWith(".xml")}
+            def groovy = group.filesInGroup.find {it.name.endsWith(".groovy")}
+
+            new TestStep(templateFilePath: xml, actionScriptPath: groovy)
         }
 
-        files.collect{
-            def path = it.getCanonicalPath()
-            def groovyScript = path.replaceAll("\\.xml", ".groovy")
-            def groovyScriptPath = null
-            if (new File(groovyScript).isFile()) {
-                println "Found action script for step $groovyScript"
-                groovyScriptPath = groovyScript
-            }
-            new TestStep(templateFilePath: path, actionScriptPath: groovyScriptPath)
-        }
+        return steps
+
     }
 
     def actionScriptPathIfExists(def directory) {

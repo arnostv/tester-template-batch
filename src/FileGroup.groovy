@@ -1,17 +1,15 @@
 
 class FileGroup {
 
-    Collection<String> filesInGroup
+    Collection<File> filesInGroup
 
-    FileGroup(String... filesInGroup) {
+    FileGroup(File... filesInGroup) {
         this.filesInGroup = filesInGroup.toList()
     }
 
     @Override
     public String toString() {
-        return "FileGroup{" +
-                "filesInGroup=" + filesInGroup +
-                '}';
+        return "FileGroup" + filesInGroup + '';
     }
 
     boolean equals(o) {
