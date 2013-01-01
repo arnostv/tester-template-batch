@@ -20,7 +20,7 @@ class TestRunner {
 
         def defaultMappings = evalTestCaseParams(testCase)
 
-        def steps = testCase.readSteps()
+        def steps = testCase.steps
 
         steps.each{runTestStep(defaultMappings, testSTS.withTestStep(it))}
 
