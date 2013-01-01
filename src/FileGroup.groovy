@@ -1,15 +1,26 @@
 
 class FileGroup {
 
+    String prefix
     Collection<File> filesInGroup
 
-    FileGroup(File... filesInGroup) {
+    FileGroup(String prefix, File... filesInGroup) {
+        assert prefix != null
+        assert filesInGroup != null
+
+        this.prefix = prefix
         this.filesInGroup = filesInGroup.toList()
     }
 
+    def fileByType(String type) {
+        def fileName = prefix + type
+        filesInGroup.find {it.name == fileName}
+    }
+
+
     @Override
     public String toString() {
-        return "FileGroup" + filesInGroup + '';
+        return "FileGroup ${prefix} ${filesInGroup.size}:${filesInGroup}"
     }
 
     boolean equals(o) {
@@ -19,12 +30,16 @@ class FileGroup {
         FileGroup fileGroup = (FileGroup) o
 
         if (filesInGroup != fileGroup.filesInGroup) return false
+        if (prefix != fileGroup.prefix) return false
 
         return true
     }
 
     int hashCode() {
-        return filesInGroup.hashCode()
+        int result
+        result = prefix.hashCode()
+        result = 31 * result + filesInGroup.hashCode()
+        return result
     }
 
 }

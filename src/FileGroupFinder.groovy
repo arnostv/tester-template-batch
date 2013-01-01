@@ -23,12 +23,12 @@ class FileGroupFinder {
 
         def groups = files.groupBy{ file ->
             def dot = file.name.indexOf(".")
-            dot != -1 ? file.name.substring(0,dot) : file
+            dot != -1 ? file.name.substring(0,dot) : file.name
         }
 
         groups.collect { group ->
             File[] f = group.value.toArray()
-            new FileGroup(f)
+            new FileGroup(group.key, f)
         }
     }
 }

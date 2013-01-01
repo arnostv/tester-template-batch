@@ -47,8 +47,8 @@ class TestDefinitionReader {
         println "Groups : ${groups}"
 
         def steps = groups.collect{ group ->
-            def xml = group.filesInGroup.find {it.name.endsWith(".xml")}
-            def groovy = group.filesInGroup.find {it.name.endsWith(".groovy")}
+            def xml = group.fileByType(".xml")
+            def groovy = group.fileByType(".groovy")
 
             new TestStep(templateFilePath: xml, actionScriptPath: groovy)
         }
