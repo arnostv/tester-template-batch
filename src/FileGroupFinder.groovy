@@ -28,7 +28,7 @@ class FileGroupFinder {
 
         groups.collect { group ->
             File[] f = group.value.toArray()
-            new FileGroup(group.key, f)
+            new FileGroup(prefix: group.key, filesInGroup: group.value)
         }
     }
 }

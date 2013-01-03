@@ -44,13 +44,13 @@ class TestDefinitionReader {
 
         def groupFinder = new FileGroupFinder(locationDir,[ACTION_SCRIPT, PARAMS_SCRIPT])
         def groups = groupFinder.findGroups()
-        println "Groups : ${groups}"
+        println "${groups.size()} groups : ${groups}"
 
         def steps = groups.collect{ group ->
             def xml = group.fileByType(".xml")
             def groovy = group.fileByType(".groovy")
 
-            new TestStep(templateFilePath: xml, actionScriptPath: groovy)
+            new TestStep(templateFilePath: xml, actionScriptPath: groovy, fileGroup: group)
         }
 
         return steps

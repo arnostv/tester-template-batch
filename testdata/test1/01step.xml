@@ -1,4 +1,5 @@
 <hello stepname="first">
+    <key>${key_value}</key>
     <foo>${fooValue}</foo>
     <bar name="${bar}"/>
 </hello>

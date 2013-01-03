@@ -1,3 +1,8 @@
 println "***       action called  - printing in lowercase      ***"
-println payload.toString().toLowerCase()
+def key = ImaginaryTestedSystem.INSTANCE.sendMessage(payload)
+println "Key is ${key}"
+
+//[
+//    message_key : key
+//]
 

@@ -34,9 +34,11 @@ class TestRunner {
 
         def params = new HashMap(testStepParams) // template engine seems to fail with immutable map
 
-
-        def template = templateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
-        def evaluatedTemplate =  template.toString()
+        def evaluatedTemplate = null
+        if (testStep.templateFilePath) {
+            def template = templateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
+            evaluatedTemplate =  template.toString()
+        }
         testRunnerHandler.handle(new TestStepData(testSTS.withParams(params), evaluatedTemplate))
     }
 
@@ -52,7 +54,7 @@ class TestRunner {
     }
 
     def evalTestStepParams(TestStep testStep, Map alreadyDefinedParams) {
-        def testStepParams = new File(testStep.templateFilePath.replaceAll("\\.xml",".params.groovy"))
+        def testStepParams = new File(testStep.fileGroup.directory(), testStep.fileGroup.prefix + ".params.groovy")
         Map paramsForStep
         if (testStepParams.isFile()) {
             println "Evaluating parameters from ${testStepParams}"

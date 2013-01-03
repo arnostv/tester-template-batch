@@ -30,7 +30,7 @@ class FileGroupFinderSpec extends Specification {
         def groups = new FileGroupFinder(location).findGroups()
 
         then:
-        groups == [new FileGroup("file1", file1txt)]
+        groups == [new FileGroup("file1", [file1txt])]
     }
 
     def "directory with two files with same prefix yields one group"() {
@@ -43,7 +43,7 @@ class FileGroupFinderSpec extends Specification {
 
         then:
 
-        groups == [new FileGroup("file1", file1txt, file1xml)]
+        groups == [new FileGroup("file1", [file1txt, file1xml])]
     }
 
     def "directory with two files but one excluded yields one group with one file"() {
@@ -56,7 +56,7 @@ class FileGroupFinderSpec extends Specification {
 
         then:
 
-        groups == [new FileGroup("file1", file1txt)]
+        groups == [new FileGroup("file1", [file1txt])]
     }
 
     def "directory with three files in two groups"() {
@@ -68,7 +68,7 @@ class FileGroupFinderSpec extends Specification {
         def groups = new FileGroupFinder(location).findGroups()
 
         then:
-        groups == [new FileGroup("file1", file1txt, file1xml), new FileGroup("file2", file2txt)]
+        groups == [new FileGroup("file1", [file1txt, file1xml]), new FileGroup("file2", [file2txt])]
     }
 
     def "directory with two files with no suffix yields two groups"() {
@@ -80,7 +80,7 @@ class FileGroupFinderSpec extends Specification {
         def groups = new FileGroupFinder(location).findGroups()
 
         then:
-        groups == [new FileGroup("file1", file1), new FileGroup("file2", file2)]
+        groups == [new FileGroup("file1", [file1]), new FileGroup("file2", [file2])]
 
     }
 
