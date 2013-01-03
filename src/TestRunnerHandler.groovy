@@ -3,7 +3,6 @@ class TestRunnerHandler {
 
     def handle(TestStepData testStepData) {
         def testStep = testStepData.testSTS.step
-        println "Test step ${testStep} has template evaluated to \n${testStepData.evaluatedTemplate}"
 
         def actionScriptPath = findActionScriptPath(testStepData.testSTS)
 

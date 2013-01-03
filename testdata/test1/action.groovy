@@ -1,3 +1,4 @@
 println "--------- action called ----------"
 println "Execution timestamp ${timestamp}"
-println payload
+println "Payload contains ${payload.toString().split('\n').size()}  lines"
+println ""
