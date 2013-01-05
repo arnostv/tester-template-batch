@@ -1,13 +1,18 @@
 
 class TestRunnerHandler {
 
-    def handle(TestStepData testStepData) {
-        def testStep = testStepData.testSTS.step
+    def runTestStep(TestStepData testStepData) {
+        def result = runScript(testStepData)
+    }
 
-        def actionScriptPath = findActionScriptPath(testStepData.testSTS)
+
+    private  runScript(TestStepData testStepData) {
+        def result = null
+        def actionScriptPath = testStepData.testSTS.findActionScriptPath()
 
         if (actionScriptPath) {
             def bindings = new HashMap(testStepData.testSTS.params)
+
             bindings['payload'] = testStepData.evaluatedTemplate
 
             bindings['out'] = System.out
@@ -19,21 +24,8 @@ class TestRunnerHandler {
         } else {
             println "UNKNOWN ACTION for ${testStepData}"
         }
-
+        result
     }
 
-    String findActionScriptPath (TestSTS testSTS) {
-        String actionScriptPath = null
-        if (testSTS?.step?.actionScriptPath) {
-            actionScriptPath = testSTS?.step?.actionScriptPath
-            println "Using test Step script ${actionScriptPath}"
-        } else if (testSTS?.testCase?.actionScriptPath) {
-            actionScriptPath = testSTS?.testCase?.actionScriptPath
-            println "Using test Case script ${actionScriptPath}"
-        } else if (testSTS?.suite?.actionScriptPath) {
-            actionScriptPath = testSTS?.suite?.actionScriptPath
-            println "Using test Suite script ${actionScriptPath}"
-        }
-        actionScriptPath
-    }
+
 }

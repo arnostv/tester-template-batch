@@ -39,7 +39,7 @@ class TestRunner {
             def template = templateEngine.createTemplate(new File(testStep.templateFilePath)).make(params)
             evaluatedTemplate =  template.toString()
         }
-        testRunnerHandler.handle(new TestStepData(testSTS.withParams(params), evaluatedTemplate))
+        testRunnerHandler.runTestStep(new TestStepData(testSTS.withParams(params), evaluatedTemplate))
     }
 
     def evalTestCaseParams(TestCase testCase) {
