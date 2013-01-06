@@ -1,16 +1,39 @@
 class TestResultHandler {
+    Map<TestStepData, TestResult> results = [:]
+
     static String TEST_OUTPUT_DIRECTORY = "testoutput"
 
     def handleTestResult(TestStepData testStepData, def result) {
         if (result!=null) {
-            File testSuitePath = new File(testStepData.testSTS.suite.locationPath)
-            File testOutputDirectory = findTestOutputDirectory(testSuitePath);
-            File testResultDir = new File(testOutputDirectory, testStepData.testSTS.step.fileGroup.pathFromBase(testSuitePath))
+            File testOutputDirectory = findTestOutputDirectory(testStepData.testSTS);
 
-            //println "Result is ${result}"
+            File testResultDir = findTestResultDirectory(testStepData.testSTS, testOutputDirectory)
+
             println "Result base dir is ${testOutputDirectory} --> output to ${testResultDir}"
+
             def testName = testStepData.testSTS.step.fileGroup.prefix
-            //println "Result for test ${testName}"
+            File testResultFile = new File(testResultDir, testName + ".txt")
+            testResultFile.write(result.toString())
+
+            if (TestResult.values().contains(result)) {
+                results[testStepData] = result
+            }
+
+        } else {
+            println "Undefined result"
+        }
+    }
+
+    File findTestResultDirectory(TestSTS testSTS,File testOutputDirectory) {
+        File testSuiteDir = new File(testSTS.suite.locationPath)
+        File testCaseDir = new File(testSTS.testCase.location)
+
+        def testCasePath = testCaseDir.absolutePath
+        def testSuitePath = testSuiteDir.absolutePath
+
+        File testResultDir
+        if (testCasePath.startsWith(testSuitePath)) {
+            testResultDir = new File(testOutputDirectory, testCasePath.substring(1+testSuitePath.length()))
 
             if (!testResultDir.isDirectory()) {
                 def directoryCreated = testResultDir.mkdirs()
@@ -20,20 +43,45 @@ class TestResultHandler {
                     println "Failed to create ${testResultDir}"
                 }
             }
-
-            File testResultFile = new File(testResultDir, testName + ".txt")
-            testResultFile.write(result.toString())
-
-        } else {
-            println "Undefined result"
         }
+
+        assert testResultDir != null
+
+        testResultDir
     }
 
-    File findTestOutputDirectory(File testSuite) {
-        def testOutput = new File(testSuite.parentFile, TEST_OUTPUT_DIRECTORY)
+    File findTestOutputDirectory(TestSTS testSTS) {
+        def testSuiteDir = new File(testSTS.suite.locationPath)
+        def testOutput = new File(testSuiteDir.parentFile, TEST_OUTPUT_DIRECTORY)
 
         assert testOutput.isDirectory()
         assert testOutput.canWrite()
         testOutput
+    }
+
+    def summarizeTestCase(TestSTS testSTS) {
+        File testOutputDir = findTestOutputDirectory(testSTS)
+        File testResultDir = findTestResultDirectory(testSTS, testOutputDir)
+
+        File testSummary = new File(testResultDir, "RESULT.txt")
+
+        def testCases = results.findAll {it.key.testSTS.testCase == testSTS.testCase}
+
+        println "Test cases are  ${testCases}"
+
+        def passedCount = testCases.count {it.value == TestResult.PASSED}
+        def failedCount = testCases.count {it.value == TestResult.FAILED}
+
+        def resultSummary
+        if (passedCount == 0 && failedCount ==0) {
+            resultSummary = "UNKNOWN"
+        } else if (failedCount > 0) {
+            resultSummary = "FAILED"
+                            //+ "\n" + testCases.find {it.value = TestResult.FAILED}
+        } else {
+            resultSummary = "PASSED"
+        }
+
+        testSummary.write(resultSummary)
     }
 }

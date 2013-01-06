@@ -2,7 +2,8 @@ import groovy.text.GStringTemplateEngine
 
 class TestRunner {
 
-    def testRunnerHandler = new TestRunnerHandler()
+    def testResultHandler = new TestResultHandler();
+    def testRunnerHandler = new TestRunnerHandler(testResultHandler)
 
     def templateEngine = new GStringTemplateEngine()//XmlTemplateEngine()
 
@@ -24,6 +25,7 @@ class TestRunner {
 
         steps.each{runTestStep(defaultMappings, testSTS.withTestStep(it))}
 
+        testResultHandler.summarizeTestCase(testSTS)
     }
 
     def runTestStep(def testCaseParams, TestSTS testSTS) {

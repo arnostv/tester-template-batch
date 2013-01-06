@@ -1,10 +1,15 @@
 
 class TestRunnerHandler {
+    TestResultHandler testResultHandler;
+
+    TestRunnerHandler(TestResultHandler testResultHandler) {
+        this.testResultHandler = testResultHandler;
+    }
 
     def runTestStep(TestStepData testStepData) {
         def result = runScript(testStepData)
 
-        new TestResultHandler().handleTestResult(testStepData, result)
+        testResultHandler.handleTestResult(testStepData, result)
     }
 
 
