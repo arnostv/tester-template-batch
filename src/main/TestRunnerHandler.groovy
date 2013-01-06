@@ -3,6 +3,8 @@ class TestRunnerHandler {
 
     def runTestStep(TestStepData testStepData) {
         def result = runScript(testStepData)
+
+        new TestResultHandler().handleTestResult(testStepData, result)
     }
 
 
@@ -20,7 +22,7 @@ class TestRunnerHandler {
             def actionFile = new File(actionScriptPath)
             def classLoader = new GroovyClassLoader()
             classLoader.addClasspath(testStepData.testSTS.suite.locationPath)
-            new GroovyShell(classLoader, new Binding(bindings)).evaluate(actionFile)
+            result = new GroovyShell(classLoader, new Binding(bindings)).evaluate(actionFile)
         } else {
             println "UNKNOWN ACTION for ${testStepData}"
         }
