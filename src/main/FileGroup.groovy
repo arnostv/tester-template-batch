@@ -13,13 +13,6 @@
         filesInGroup[0].parentFile
     }
 
-    def pathFromBase(File providedBasePath) {
-        if (directory().absolutePath.startsWith(providedBasePath.absolutePath)) {
-            return directory().absolutePath.substring(1+providedBasePath.absolutePath.length())
-        }
-    }
-
-
     @Override
     public String toString() {
         return "FileGroup ${prefix} ${filesInGroup.size()}:${filesInGroup}"

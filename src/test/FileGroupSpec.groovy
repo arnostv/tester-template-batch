@@ -17,16 +17,4 @@ class FileGroupSpec extends Specification{
         txtFile == null
     }
 
-    def "should derive path from base directory"() {
-        setup:
-        def base = new File("/my/path/basefile")
-        def file1 = new File(base, "suite1/test1/file1.xml")
-
-        when:
-        def group = new FileGroup(prefix: "file1",filesInGroup: [file1])
-
-        then:
-        group.pathFromBase(base) == "suite1/test1"
-    }
-
 }
