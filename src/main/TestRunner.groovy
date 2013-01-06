@@ -9,17 +9,20 @@ class TestRunner {
 
     def runTestSuite(TestSuite testSuite) {
         TestSTS sts = TestSTS.createWithTestSuite(testSuite)
+        def defaultMappings = evalTestSuiteParams(testSuite)
         testSuite.testCases.each {
-            runTestCase(sts.withTestCase(it))
+            runTestCase(defaultMappings, sts.withTestCase(it))
         }
     }
 
-    def runTestCase(TestSTS testSTS) {
+    def runTestCase(def testSuiteMappings,TestSTS testSTS) {
         def testCase = testSTS.testCase
 
         println "Running ${testCase}"
 
-        def defaultMappings = evalTestCaseParams(testCase)
+        def testCaseMappings = evalTestCaseParams(testCase)
+        def defaultMappings = new HashMap(testSuiteMappings)
+        defaultMappings.putAll(testCaseMappings)
 
         def steps = testCase.steps
 
@@ -42,6 +45,17 @@ class TestRunner {
             evaluatedTemplate =  template.toString()
         }
         testRunnerHandler.runTestStep(new TestStepData(testSTS.withParams(params), evaluatedTemplate))
+    }
+
+    def evalTestSuiteParams(TestSuite testSuite) {
+        if (testSuite.paramsScriptPath) {
+            println "Evaluating parameters from ${testSuite.paramsScriptPath}"
+            Map mappings = new GroovyShell().evaluate(new File(testSuite.paramsScriptPath))
+            mappings.asImmutable()
+        } else {
+            Map mappingsUndefined = [_parametersForTestSuiteNotSet : true]
+            mappingsUndefined.asImmutable()
+        }
     }
 
     def evalTestCaseParams(TestCase testCase) {

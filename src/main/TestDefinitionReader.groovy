@@ -22,6 +22,7 @@ class TestDefinitionReader {
         new TestSuite(
                 testCases:  testCases,
                 locationPath: testSuiteDir.getCanonicalPath(),
+                paramsScriptPath : paramsScriptPathIfExists(testSuiteDir),
                 actionScriptPath: actionScriptPathIfExists(testSuiteDir.getCanonicalPath())
             )
     }
