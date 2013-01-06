@@ -13,6 +13,8 @@ class TestRunner {
         testSuite.testCases.each {
             runTestCase(defaultMappings, sts.withTestCase(it))
         }
+
+        testResultHandler.summarizeTestSuite(sts)
     }
 
     def runTestCase(def testSuiteMappings,TestSTS testSTS) {

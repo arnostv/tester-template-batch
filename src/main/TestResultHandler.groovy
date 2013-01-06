@@ -66,22 +66,38 @@ class TestResultHandler {
         File testSummary = new File(testResultDir, "RESULT.txt")
 
         def testCases = results.findAll {it.key.testSTS.testCase == testSTS.testCase}
-
         println "Test cases are  ${testCases}"
 
-        def passedCount = testCases.count {it.value == TestResult.PASSED}
-        def failedCount = testCases.count {it.value == TestResult.FAILED}
+        def resultSummary = summaryForTestResults(testCases)
 
+        testSummary.write(resultSummary)
+    }
+
+    def summarizeTestSuite(TestSTS testSTS) {
+        File testOutputDir = findTestOutputDirectory(testSTS)
+
+        File testSummary = new File(testOutputDir, "RESULT.txt")
+
+        def testSuites = results.findAll {it.key.testSTS.suite == testSTS.suite}
+
+        def resultSummary = summaryForTestResults(testSuites)
+
+        testSummary.write(resultSummary)
+    }
+
+    private summaryForTestResults(Map<TestStepData, TestResult> testResults) {
         def resultSummary
-        if (passedCount == 0 && failedCount ==0) {
+        def passedCount = testResults.count { it.value == TestResult.PASSED }
+        def failedCount = testResults.count { it.value == TestResult.FAILED }
+
+        if (passedCount == 0 && failedCount == 0) {
             resultSummary = "UNKNOWN"
         } else if (failedCount > 0) {
             resultSummary = "FAILED"
-                            //+ "\n" + testCases.find {it.value = TestResult.FAILED}
+            //+ "\n" + testCases.find {it.value = TestResult.FAILED}
         } else {
             resultSummary = "PASSED"
         }
-
-        testSummary.write(resultSummary)
+        resultSummary
     }
 }
