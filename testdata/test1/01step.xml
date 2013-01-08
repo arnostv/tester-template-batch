@@ -1,5 +1,6 @@
 <hello stepname="first">
     <key>${key_value}</key>
     <foo>${fooValue}</foo>
+    <time>${timestamp}</time>
     <bar name="${bar}"/>
 </hello>
