@@ -1,8 +1,12 @@
+import java.text.SimpleDateFormat
+
 class TestResultHandler {
     Map<TestStepData, TestResult> results = [:]
     File testOutputDirectory
 
     static String TEST_OUTPUT_DIRECTORY = "testoutput"
+    static boolean TEST_OUTPUT_NUMBERED = true
+    static int NUMBER_LENGTH = 3
 
     def handleTestResult(TestStepData testStepData, def result) {
         if (result!=null) {
@@ -98,6 +102,28 @@ class TestResultHandler {
     }
 
     def initializeTestOutputDirectory(TestSTS testSTS) {
-        testOutputDirectory = findTestOutputDirectory(testSTS)
+        def baseTestOutput = findTestOutputDirectory(testSTS)
+
+        if (TEST_OUTPUT_NUMBERED) {
+            def suffix = "_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date())
+            def allFiles = baseTestOutput.listFiles().toList()
+            def allDirectoriesWithNumbers = allFiles.findAll {it -> it.isDirectory() && it.name=~ /[0-9]+.*/}
+
+            def allNumber = allDirectoriesWithNumbers.collect {fle ->
+                def matcher = fle.name =~ /^([0-9]+).*$/
+                def matches = matcher.matches()
+                def result = matcher[0][1]
+                result.toInteger()
+            }
+            int number = 1
+            if (!allDirectoriesWithNumbers.empty) {
+                number = allNumber.last() + 1
+            }
+            def numberFormated = String.format("%0" + NUMBER_LENGTH + "d", number)
+            testOutputDirectory = new File(baseTestOutput,numberFormated + suffix)
+
+        } else {
+            testOutputDirectory = baseTestOutput
+        }
     }
 }
