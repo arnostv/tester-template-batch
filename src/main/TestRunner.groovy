@@ -9,6 +9,8 @@ class TestRunner {
 
     def runTestSuite(TestSuite testSuite) {
         TestSTS testSTS = TestSTS.createWithTestSuite(testSuite)
+        testResultHandler.initializeTestOutputDirectory(testSTS)
+
         def defaultMappings = evalTestSuiteParams(testSTS,testSuite)
         testSuite.testCases.each {
             runTestCase(defaultMappings, testSTS.withTestCase(it))

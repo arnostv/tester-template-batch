@@ -1,13 +1,12 @@
 class TestResultHandler {
     Map<TestStepData, TestResult> results = [:]
+    File testOutputDirectory
 
     static String TEST_OUTPUT_DIRECTORY = "testoutput"
 
     def handleTestResult(TestStepData testStepData, def result) {
         if (result!=null) {
-            File testOutputDirectory = findTestOutputDirectory(testStepData.testSTS);
-
-            File testResultDir = findTestResultDirectory(testStepData.testSTS, testOutputDirectory)
+            File testResultDir = findTestResultDirectory(testStepData.testSTS)
 
             println "Result base dir is ${testOutputDirectory} --> output to ${testResultDir}"
 
@@ -24,7 +23,7 @@ class TestResultHandler {
         }
     }
 
-    File findTestResultDirectory(TestSTS testSTS,File testOutputDirectory) {
+    File findTestResultDirectory(TestSTS testSTS) {
         File testSuiteDir = new File(testSTS.suite.locationPath)
         File testCaseDir = new File(testSTS.testCase.location)
 
@@ -60,8 +59,7 @@ class TestResultHandler {
     }
 
     def summarizeTestCase(TestSTS testSTS) {
-        File testOutputDir = findTestOutputDirectory(testSTS)
-        File testResultDir = findTestResultDirectory(testSTS, testOutputDir)
+        File testResultDir = findTestResultDirectory(testSTS)
 
         File testSummary = new File(testResultDir, "RESULT.txt")
 
@@ -74,9 +72,7 @@ class TestResultHandler {
     }
 
     def summarizeTestSuite(TestSTS testSTS) {
-        File testOutputDir = findTestOutputDirectory(testSTS)
-
-        File testSummary = new File(testOutputDir, "RESULT.txt")
+        File testSummary = new File(testOutputDirectory, "RESULT.txt")
 
         def testSuites = results.findAll {it.key.testSTS.suite == testSTS.suite}
 
@@ -99,5 +95,9 @@ class TestResultHandler {
             resultSummary = "PASSED"
         }
         resultSummary
+    }
+
+    def initializeTestOutputDirectory(TestSTS testSTS) {
+        testOutputDirectory = findTestOutputDirectory(testSTS)
     }
 }
